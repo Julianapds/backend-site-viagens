@@ -10,5 +10,9 @@ Rotas do Sol é um site de viagens. Ele foi desenvolvido como atividade integrad
 ### Modelo Lógico
 ![Modelo Lógico](./modelos-e-diagramas/Lógico_viagens.png)
 
+### Modelo Fisico
+![Modelo Fisico](./modelos-e-diagramas/Fisico_viagens.png)
+
 ### Diagrama de Classes
 ![Diagrama de Classes](./modelos-e-diagramas/modelo_classe_%20agencia.png)
+
