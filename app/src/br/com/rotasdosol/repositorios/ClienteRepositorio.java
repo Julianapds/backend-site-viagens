@@ -5,7 +5,9 @@ import br.com.rotasdosol.entidades.Cliente;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClienteRepositorio implements Repositorio<Cliente> {
@@ -33,7 +35,30 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
 
         @Override
     public List<Cliente> listar() {
-        return null;
+        List<Cliente>clientes=new ArrayList<>();
+            String sql ="SELECT * FROM cliente;";
+            try (Connection conn = ConexaoBancoDeDados.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                ResultSet resultSet =pstmt. executeQuery();
+                while (resultSet.next()) {
+                    Cliente cliente=new Cliente();
+                    cliente.setIdCliente(resultSet.getInt("id_cliente"));
+
+                    cliente.setCpf(resultSet.getString("cpf"));
+                    cliente.setEmail(resultSet.getString("email"));
+                    cliente.setEndereco(resultSet.getString("endereco"));
+                    cliente.setTelefone(resultSet.getString("telefone"));
+                    clientes.add(cliente);
+                }
+
+
+
+                System.out.println("Clientes consultados com sucesso.");
+            } catch (SQLException e) {
+                System.out.println("Erro ao consultar clientes." + e.getMessage());
+            }
+            return clientes;
+
     }
 
     @Override
