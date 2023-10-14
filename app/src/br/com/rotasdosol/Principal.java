@@ -7,6 +7,7 @@ import br.com.rotasdosol.repositorios.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class Principal {
         VooRepositorio vooRepositorio = new VooRepositorio();
         HospedagemRepositorio hospedagemRepositorio = new HospedagemRepositorio();
         PacoteRepositorio pacoteRepositorio = new PacoteRepositorio();
+        ReservaRepositorio reservaRepositorio = new ReservaRepositorio();
 
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -83,7 +85,7 @@ public class Principal {
                     break;
                 case 18:
                     cadastrarNovoPacote(scanner, pacoteRepositorio);
-                    break;ak;
+                    break;
                 case 19:
                     atualizarPacote(scanner, pacoteRepositorio);
                     break;
@@ -91,12 +93,22 @@ public class Principal {
                     deletarPacote(scanner, pacoteRepositorio);
                     break;
                 case 21:
+                    listarReservasDeCliente(scanner, reservaRepositorio);
+                    break;
+                case 22:
+                    criarReserva(scanner, reservaRepositorio, clienteRepositorio,pacoteRepositorio,hospedagemRepositorio,vooRepositorio);
+                    break;
+                case 23:
+                    atualizarReserva(scanner, reservaRepositorio);
+                case 24:
+                    deletarReserva(scanner,reservaRepositorio);
+                case 25:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida!");
             }
-        } while (opcao != 21);
+        } while (opcao != 25);
 
         scanner.close();
     }
@@ -125,7 +137,11 @@ public class Principal {
         System.out.println("18) Cadastrar novo pacote");
         System.out.println("19) Atualizar pacote");
         System.out.println("20) Deletar pacote");
-        System.out.println("21) Sair");
+        System.out.println("21) Listar reservar por cliente");
+        System.out.println("22) Cadastrar nova reserva para cliente");
+        System.out.println("23) Atualizar reserva");
+        System.out.println("24) Cancelar reserva");
+        System.out.println("25) Sair");
         System.out.println();
     }
 
@@ -493,5 +509,130 @@ public class Principal {
         System.out.println("Pacote deletado com sucesso!");
     }
 
+    private static void listarReservasDeCliente(Scanner scanner, ReservaRepositorio reservaRepositorio) {
+        System.out.println("Digite o ID do cliente para listar suas reservas:");
+        Integer idCliente = scanner.nextInt();
+        scanner.nextLine();  // Consume newline
 
+        List<Reserva> reservas = reservaRepositorio.listar(idCliente);
+        if(reservas.isEmpty()) {
+            System.out.println("Nenhuma reserva encontrada para o cliente de ID: " + idCliente);
+        } else {
+            System.out.println(reservas);
+        }
+    }
+
+    private static void criarReserva(Scanner scanner, ReservaRepositorio reservaRepositorio, ClienteRepositorio clienteRepositorio, PacoteRepositorio pacoteRepositorio, HospedagemRepositorio hospedagemRepositorio, VooRepositorio vooRepositorio) {
+        System.out.println("Digite o ID do cliente:");
+        Integer idCliente = scanner.nextInt();
+        scanner.nextLine();
+
+        if(clienteRepositorio.buscarPorId(idCliente) == null) {
+            System.out.println("Cliente não encontrado.");
+            return;
+        }
+
+        System.out.println("Digite o ID do pacote ou deixe em branco se não tiver:");
+        String idPacoteStr = scanner.nextLine();
+        Integer idPacote = null;
+        if (!idPacoteStr.isBlank()) {
+            idPacote = Integer.parseInt(idPacoteStr);
+            if(pacoteRepositorio.buscarPorId(idPacote) == null) {
+                System.out.println("Pacote não encontrado.");
+                return;
+            }
+        }
+
+        System.out.println("Digite o ID da hospedagem ou deixe em branco se não tiver:");
+        String idHospedagemStr = scanner.nextLine();
+        Integer idHospedagem = null;
+        if (!idHospedagemStr.isBlank()) {
+            idHospedagem = Integer.parseInt(idHospedagemStr);
+            if(hospedagemRepositorio.buscarPorId(idHospedagem) == null) {
+                System.out.println("Hospedagem não encontrada.");
+                return;
+            }
+        }
+
+        System.out.println("Digite o ID do voo ou deixe em branco se não tiver:");
+        String idVooStr = scanner.nextLine();
+        Integer idVoo = null;
+        if (!idVooStr.isBlank()) {
+            idVoo = Integer.parseInt(idVooStr);
+            if(vooRepositorio.buscarPorId(idVoo) == null) {
+                System.out.println("Voo não encontrado.");
+                return;
+            }
+        }
+
+        Reserva reserva = new Reserva();
+        reserva.setIdReserva(new Random().nextInt(1000 - 1 + 1));
+        reserva.setIdCliente(idCliente);
+        reserva.setIdPacote(idPacote);
+        reserva.setIdHospedagem(idHospedagem);
+        reserva.setIdVoo(idVoo);
+        reserva.setDataReserva(new Date());
+        reserva.setStatusReserva(StatusReserva.RESERVADO);
+
+        reservaRepositorio.criar(reserva);
+
+        System.out.println("Reserva criada com sucesso! ID: " + reserva.getIdReserva());
+    }
+
+    private static void atualizarReserva(Scanner scanner, ReservaRepositorio reservaRepositorio) {
+        System.out.println("Digite o ID da reserva que pretende atualizar:");
+        Integer idReserva = scanner.nextInt();
+        scanner.nextLine();
+
+        Reserva reservaEncontrada = reservaRepositorio.buscarPorId(idReserva);
+        if(reservaEncontrada == null) {
+            System.out.println("Reserva não encontrada.");
+            return;
+        }
+
+        System.out.println("Deseja atualizar o ID do pacote? (s/n)");
+        char resposta = scanner.nextLine().charAt(0);
+        if(resposta == 's' || resposta == 'S') {
+            System.out.println("Digite o novo ID do pacote:");
+            Integer novoIdPacote = scanner.nextInt();
+            scanner.nextLine();
+            reservaEncontrada.setIdPacote(novoIdPacote);
+        }
+
+        System.out.println("Deseja atualizar o ID da hospedagem? (s/n)");
+        resposta = scanner.nextLine().charAt(0);
+        if(resposta == 's' || resposta == 'S') {
+            System.out.println("Digite o novo ID da hospedagem:");
+            Integer novoIdHospedagem = scanner.nextInt();
+            scanner.nextLine();
+            reservaEncontrada.setIdHospedagem(novoIdHospedagem);
+        }
+
+        System.out.println("Deseja atualizar o ID do voo? (s/n)");
+        resposta = scanner.nextLine().charAt(0);
+        if(resposta == 's' || resposta == 'S') {
+            System.out.println("Digite o novo ID do voo:");
+            Integer novoIdVoo = scanner.nextInt();
+            scanner.nextLine();
+            reservaEncontrada.setIdVoo(novoIdVoo);
+        }
+
+        Reserva reservaAtualizada = reservaRepositorio.atualizar(reservaEncontrada);
+        System.out.println("Reserva de ID "+ reservaAtualizada.getIdReserva() + " foi atualizada com sucesso!");
+    }
+
+    private static void deletarReserva(Scanner scanner, ReservaRepositorio reservaRepositorio) {
+        System.out.print("Digite o ID da reserva que pretende cancelar: ");
+        Integer idReserva = scanner.nextInt();
+
+        Reserva reserva = reservaRepositorio.buscarPorId(idReserva);
+        if (reserva != null) {
+            reserva.setStatusReserva(StatusReserva.CANCELADO);
+            reservaRepositorio.atualizar(reserva);
+            System.out.println("Reserva cancelada com sucesso!");
+        } else {
+            System.out.println("Reserva não encontrada.");
+        }
+    }
+    
 }

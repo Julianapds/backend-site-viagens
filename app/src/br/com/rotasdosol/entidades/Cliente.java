@@ -1,5 +1,8 @@
 package br.com.rotasdosol.entidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cliente {
     private Integer idCliente;
     private String email;

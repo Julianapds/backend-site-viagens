@@ -134,4 +134,34 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
 
         return cliente;
     }
+
+    public Cliente buscarPorId(Integer idCliente) {
+        String sql = "SELECT * FROM cliente WHERE id_cliente = ?;";
+        Cliente cliente = null;
+
+        try (Connection conn = ConexaoBancoDeDados.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idCliente);
+            ResultSet resultSet = pstmt.executeQuery();
+
+            if (resultSet.next()) {
+                cliente = new Cliente();
+                cliente.setIdCliente(resultSet.getInt("id_cliente"));
+                cliente.setCpf(resultSet.getString("cpf"));
+                cliente.setEmail(resultSet.getString("email"));
+                cliente.setEndereco(resultSet.getString("endereco"));
+                cliente.setTelefone(resultSet.getString("telefone"));
+                System.out.println("Cliente encontrado com sucesso.");
+            } else {
+                System.out.println("Cliente não encontrado para o ID fornecido.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar cliente por ID. " + e.getMessage());
+        }
+
+        return cliente;
+    }
+
 }
