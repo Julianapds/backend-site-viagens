@@ -62,12 +62,46 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
     }
 
     @Override
-    public Object atualizar(Integer id, Cliente object) {
+    public Cliente atualizar(Cliente cliente) {
+        String sql = "UPDATE cliente SET email = ?, cpf = ?, telefone = ?, endereco = ? WHERE id_cliente = ?;";
+
+        try (Connection conn = ConexaoBancoDeDados.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, cliente.getEmail());
+            pstmt.setString(2, cliente.getCpf());
+            pstmt.setString(3, cliente.getTelefone());
+            pstmt.setString(4, cliente.getEndereco());
+            pstmt.setInt(5, cliente.getIdCliente());
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Cliente atualizado com sucesso.");
+                return cliente;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar cliente. " + e.getMessage());
+        }
         return null;
     }
 
     @Override
     public void deletar(Integer id) {
+        String sql = "DELETE FROM cliente WHERE id_cliente = ?;";
 
+        try (Connection conn = ConexaoBancoDeDados.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Cliente deletado com sucesso.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao deletar cliente. " + e.getMessage());
+        }
     }
 }
