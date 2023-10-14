@@ -2,9 +2,10 @@ package br.com.rotasdosol;
 
 
 import br.com.rotasdosol.entidades.Cliente;
+import br.com.rotasdosol.entidades.Destino;
 import br.com.rotasdosol.repositorios.ClienteRepositorio;
+import br.com.rotasdosol.repositorios.DestinoRepositorio;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -13,6 +14,7 @@ public class Principal {
     public static void main(String[] args) {
 
         ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
+        DestinoRepositorio destinoRepositorio = new DestinoRepositorio();
 
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -37,16 +39,16 @@ public class Principal {
                     deletarCliente(scanner, clienteRepositorio);
                     break;
                 case 5:
-                    // Deletar uma ideia
+                    listarDestinos(destinoRepositorio);
                     break;
                 case 6:
-                    // Adicionar comentário a uma ideia
+                    cadastrarNovoDestino(scanner, destinoRepositorio);
                     break;
                 case 7:
-                    // Visualizar comentários de uma ideia
+                    atualizarDestino(scanner, destinoRepositorio);
                     break;
                 case 8:
-                    // Deletar comentários de uma ideia
+                    deletarDestino(scanner, destinoRepositorio);
                     break;
                 case 9:
                     System.out.println("Saindo...");
@@ -67,7 +69,11 @@ public class Principal {
         System.out.println("2) Cadastrar novo cliente");
         System.out.println("3) Atualizar cliente");
         System.out.println("4) Deletar cliente");
-        System.out.println("5) Sair");
+        System.out.println("5) Listar destinos");
+        System.out.println("6) Cadastrar novo destino");
+        System.out.println("7) Atualizar destino");
+        System.out.println("8) Deletar destino");
+        System.out.println("9) Sair");
         System.out.println();
     }
 
@@ -135,5 +141,71 @@ public class Principal {
         System.out.print("Digite o ID do cliente que pretende atualizar: ");
         Integer id = scanner.nextInt();
         clienteRepositorio.deletar(id);
+    }
+
+    private static void cadastrarNovoDestino(Scanner scanner, DestinoRepositorio destinoRepositorio) {
+        System.out.println("Digite o nome do destino: ");
+        String nome = scanner.nextLine();
+        System.out.println("Digite o país do destino: ");
+        String pais = scanner.nextLine();
+        System.out.println("Digite a cidade do destino: ");
+        String cidade = scanner.nextLine();
+
+        Destino destino = new Destino();
+        destino.setIdDestino(new Random().nextInt(1000 - 1 + 1)); // Ajustando para ter um range maior
+        destino.setNome(nome);
+        destino.setPais(pais);
+        destino.setCidade(cidade);
+
+        destinoRepositorio.criar(destino);
+
+        System.out.println("Destino cadastrado com sucesso! ID: " + destino.getIdDestino());
+        System.out.println();
+    }
+
+    private static void listarDestinos(DestinoRepositorio destinoRepositorio) {
+        System.out.println(destinoRepositorio.listar());
+    }
+
+    private static void atualizarDestino(Scanner scanner, DestinoRepositorio destinoRepositorio) {
+
+        System.out.println("Digite o ID do destino que pretende atualizar:");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();  // Consume newline left-over
+        System.out.println("Digite o novo nome ou tecle Enter para usar o mesmo:");
+        String nome = scanner.nextLine();
+        System.out.println("Digite o novo país ou tecle Enter para usar o mesmo:");
+        String pais = scanner.nextLine();
+        System.out.println("Digite a nova cidade ou tecle Enter para usar o mesmo:");
+        String cidade = scanner.nextLine();
+
+        var destinoEncontrado = destinoRepositorio.buscarPorId(id);
+
+        if(destinoEncontrado == null) {
+            System.out.println("Destino não encontrado.");
+            return;
+        }
+
+        if(nome != null && !nome.isBlank()) {
+            destinoEncontrado.setNome(nome);
+        }
+        if(pais != null && !pais.isBlank()) {
+            destinoEncontrado.setPais(pais);
+        }
+        if(cidade != null && !cidade.isBlank()) {
+            destinoEncontrado.setCidade(cidade);
+        }
+
+        var destinoAtualizado = destinoRepositorio.atualizar(destinoEncontrado);
+
+        System.out.println("Destino de ID "+ destinoAtualizado.getIdDestino() + " foi atualizado com sucesso!");
+
+    }
+
+    private static void deletarDestino(Scanner scanner, DestinoRepositorio destinoRepositorio) {
+        System.out.print("Digite o ID do destino que pretende deletar: ");
+        Integer id = scanner.nextInt();
+        destinoRepositorio.deletar(id);
+        System.out.println("Destino deletado com sucesso!");
     }
 }
