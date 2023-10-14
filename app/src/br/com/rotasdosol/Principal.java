@@ -3,9 +3,11 @@ package br.com.rotasdosol;
 
 import br.com.rotasdosol.entidades.Cliente;
 import br.com.rotasdosol.entidades.Destino;
+import br.com.rotasdosol.entidades.Hospedagem;
 import br.com.rotasdosol.entidades.Voo;
 import br.com.rotasdosol.repositorios.ClienteRepositorio;
 import br.com.rotasdosol.repositorios.DestinoRepositorio;
+import br.com.rotasdosol.repositorios.HospedagemRepositorio;
 import br.com.rotasdosol.repositorios.VooRepositorio;
 
 import java.text.ParseException;
@@ -21,6 +23,7 @@ public class Principal {
         ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         DestinoRepositorio destinoRepositorio = new DestinoRepositorio();
         VooRepositorio vooRepositorio = new VooRepositorio();
+        HospedagemRepositorio hospedagemRepositorio = new HospedagemRepositorio();
 
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -69,12 +72,22 @@ public class Principal {
                     deletarVoo(scanner, vooRepositorio);
                     break;
                 case 13:
+                    listarHospedagens(hospedagemRepositorio);
+                    break;
+                case 14:
+                    cadastrarNovaHospedagem(scanner, hospedagemRepositorio);
+                    break;
+                case 15:
+                    atualizarHospedagem(scanner, hospedagemRepositorio);
+                case 16:
+                    deletarHospedagem(scanner, hospedagemRepositorio);
+                case 17:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida!");
             }
-        } while (opcao != 13);
+        } while (opcao != 17);
 
         scanner.close();
     }
@@ -95,7 +108,11 @@ public class Principal {
         System.out.println("10) Cadastrar novo voo");
         System.out.println("11) Atualizar voo");
         System.out.println("12) Deletar voo");
-        System.out.println("13) Sair");
+        System.out.println("13) Listar hospedagens");
+        System.out.println("14) Cadastrar nova hospedagem");
+        System.out.println("15) Atualizar hospedagem");
+        System.out.println("16) Deletar hospedagem");
+        System.out.println("17) Sair");
         System.out.println();
     }
 
@@ -174,7 +191,7 @@ public class Principal {
         String cidade = scanner.nextLine();
 
         Destino destino = new Destino();
-        destino.setIdDestino(new Random().nextInt(1000 - 1 + 1)); // Ajustando para ter um range maior
+        destino.setIdDestino(new Random().nextInt(1000 - 1 + 1));
         destino.setNome(nome);
         destino.setPais(pais);
         destino.setCidade(cidade);
@@ -314,4 +331,91 @@ public class Principal {
         vooRepositorio.deletar(id);
         System.out.println("Voo deletado com sucesso!");
     }
+
+    private static void listarHospedagens(HospedagemRepositorio hospedagemRepositorio) {
+        System.out.println(hospedagemRepositorio.listar());
+    }
+
+    private static void cadastrarNovaHospedagem(Scanner scanner, HospedagemRepositorio hospedagemRepositorio) {
+        System.out.println("Digite o nome do hotel:");
+        String nomeHotel = scanner.nextLine();
+
+        System.out.println("Digite o tipo de quarto:");
+        String tipoQuarto = scanner.nextLine();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date dataCheckin = null;
+        System.out.println("Digite a data de check-in (formato YYYY-MM-DD):");
+        String dataCheckinStr = scanner.nextLine();
+        try {
+            dataCheckin = formatter.parse(dataCheckinStr);
+        } catch (ParseException e) {
+            System.out.println("Erro na data de check-in: " + e.getMessage());
+            return;
+        }
+
+        Date dataCheckout = null;
+        System.out.println("Digite a data de checkout (formato YYYY-MM-DD):");
+        String dataCheckoutStr = scanner.nextLine();
+        try {
+            dataCheckout = formatter.parse(dataCheckoutStr);
+        } catch (ParseException e) {
+            System.out.println("Erro na data de checkout: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Digite o valor da pernoite:");
+        Double valorPernoite = scanner.nextDouble();
+
+        System.out.println("Digite o ID do destino:");
+        Integer idDestino = scanner.nextInt();
+        scanner.nextLine();
+
+        Hospedagem hospedagem = new Hospedagem();
+        hospedagem.setIdHospedagem(new Random().nextInt(100 - 1 + 1));
+        hospedagem.setNomeHotel(nomeHotel);
+        hospedagem.setTipoQuarto(tipoQuarto);
+        hospedagem.setDataCheckin(dataCheckin);
+        hospedagem.setDataCheckout(dataCheckout);
+        hospedagem.setValorPernoite(valorPernoite);
+        hospedagem.setIdDestino(idDestino);
+
+        hospedagemRepositorio.criar(hospedagem);
+
+        System.out.println("Hospedagem cadastrada com sucesso! ID: " + hospedagem.getIdHospedagem());
+        System.out.println();
+    }
+
+    private static void atualizarHospedagem(Scanner scanner, HospedagemRepositorio hospedagemRepositorio) {
+        System.out.println("Digite o ID da hospedagem que pretende atualizar:");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Digite o novo nome do hotel ou tecle Enter para usar o mesmo:");
+        String nomeHotel = scanner.nextLine();
+
+        var hospedagemEncontrada = hospedagemRepositorio.buscarPorId(id);
+
+        if(hospedagemEncontrada == null) {
+            System.out.println("Hospedagem não encontrada.");
+            return;
+        }
+
+        if(nomeHotel != null && !nomeHotel.isBlank()) {
+            hospedagemEncontrada.setNomeHotel(nomeHotel);
+        }
+
+        var hospedagemAtualizada = hospedagemRepositorio.atualizar(hospedagemEncontrada);
+
+        System.out.println("Hospedagem de ID "+ hospedagemAtualizada.getIdHospedagem() + " foi atualizada com sucesso!");
+    }
+
+    private static void deletarHospedagem(Scanner scanner, HospedagemRepositorio hospedagemRepositorio) {
+        System.out.print("Digite o ID da hospedagem que pretende deletar: ");
+        Integer id = scanner.nextInt();
+        hospedagemRepositorio.deletar(id);
+        System.out.println("Hospedagem deletada com sucesso!");
+    }
+
 }
