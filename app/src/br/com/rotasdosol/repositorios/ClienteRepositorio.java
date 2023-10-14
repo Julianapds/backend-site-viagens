@@ -104,4 +104,34 @@ public class ClienteRepositorio implements Repositorio<Cliente> {
             System.out.println("Erro ao deletar cliente. " + e.getMessage());
         }
     }
+
+
+    public Cliente buscarPorCpf(String cpf) {
+        String sql = "SELECT * FROM cliente WHERE cpf = ?;";
+        Cliente cliente = null;
+
+        try (Connection conn = ConexaoBancoDeDados.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, cpf);
+            ResultSet resultSet = pstmt.executeQuery();
+
+            if (resultSet.next()) {
+                cliente = new Cliente();
+                cliente.setIdCliente(resultSet.getInt("id_cliente"));
+                cliente.setCpf(resultSet.getString("cpf"));
+                cliente.setEmail(resultSet.getString("email"));
+                cliente.setEndereco(resultSet.getString("endereco"));
+                cliente.setTelefone(resultSet.getString("telefone"));
+                System.out.println("Cliente encontrado com sucesso.");
+            } else {
+                System.out.println("Cliente não encontrado para o CPF fornecido.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar cliente por CPF. " + e.getMessage());
+        }
+
+        return cliente;
+    }
 }
