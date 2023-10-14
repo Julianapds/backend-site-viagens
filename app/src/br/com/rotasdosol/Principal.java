@@ -1,14 +1,8 @@
 package br.com.rotasdosol;
 
 
-import br.com.rotasdosol.entidades.Cliente;
-import br.com.rotasdosol.entidades.Destino;
-import br.com.rotasdosol.entidades.Hospedagem;
-import br.com.rotasdosol.entidades.Voo;
-import br.com.rotasdosol.repositorios.ClienteRepositorio;
-import br.com.rotasdosol.repositorios.DestinoRepositorio;
-import br.com.rotasdosol.repositorios.HospedagemRepositorio;
-import br.com.rotasdosol.repositorios.VooRepositorio;
+import br.com.rotasdosol.entidades.*;
+import br.com.rotasdosol.repositorios.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +18,7 @@ public class Principal {
         DestinoRepositorio destinoRepositorio = new DestinoRepositorio();
         VooRepositorio vooRepositorio = new VooRepositorio();
         HospedagemRepositorio hospedagemRepositorio = new HospedagemRepositorio();
+        PacoteRepositorio pacoteRepositorio = new PacoteRepositorio();
 
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -79,15 +74,29 @@ public class Principal {
                     break;
                 case 15:
                     atualizarHospedagem(scanner, hospedagemRepositorio);
+                    break;
                 case 16:
                     deletarHospedagem(scanner, hospedagemRepositorio);
+                    break;
                 case 17:
+                    listarPacotes(pacoteRepositorio);
+                    break;
+                case 18:
+                    cadastrarNovoPacote(scanner, pacoteRepositorio);
+                    break;ak;
+                case 19:
+                    atualizarPacote(scanner, pacoteRepositorio);
+                    break;
+                case 20:
+                    deletarPacote(scanner, pacoteRepositorio);
+                    break;
+                case 21:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida!");
             }
-        } while (opcao != 17);
+        } while (opcao != 21);
 
         scanner.close();
     }
@@ -112,7 +121,11 @@ public class Principal {
         System.out.println("14) Cadastrar nova hospedagem");
         System.out.println("15) Atualizar hospedagem");
         System.out.println("16) Deletar hospedagem");
-        System.out.println("17) Sair");
+        System.out.println("17) Listar pacotes");
+        System.out.println("18) Cadastrar novo pacote");
+        System.out.println("19) Atualizar pacote");
+        System.out.println("20) Deletar pacote");
+        System.out.println("21) Sair");
         System.out.println();
     }
 
@@ -417,5 +430,68 @@ public class Principal {
         hospedagemRepositorio.deletar(id);
         System.out.println("Hospedagem deletada com sucesso!");
     }
+
+    private static void listarPacotes(PacoteRepositorio pacoteRepositorio) {
+        System.out.println(pacoteRepositorio.listar());
+    }
+
+    private static void cadastrarNovoPacote(Scanner scanner, PacoteRepositorio pacoteRepositorio) {
+        System.out.println("Digite o valor do pacote:");
+        Double valorPreco = scanner.nextDouble();
+        scanner.nextLine();  // Consume newline
+
+        System.out.println("Digite o ID da hospedagem ou deixe em branco se não tiver:");
+        String idHospedagemStr = scanner.nextLine();
+        Integer idHospedagem = null;
+        if (!idHospedagemStr.isBlank()) {
+            idHospedagem = Integer.parseInt(idHospedagemStr);
+        }
+
+        System.out.println("Digite o ID do voo ou deixe em branco se não tiver:");
+        String idVooStr = scanner.nextLine();
+        Integer idVoo = null;
+        if (!idVooStr.isBlank()) {
+            idVoo = Integer.parseInt(idVooStr);
+        }
+
+        Pacote pacote = new Pacote();
+        pacote.setIdPacote(new Random().nextInt(1000 - 1 + 1)); // Gerando um ID aleatório entre 1 e 1000
+        pacote.setValorPreco(valorPreco);
+        pacote.setIdHospedagem(idHospedagem);
+        pacote.setIdVoo(idVoo);
+
+        pacoteRepositorio.criar(pacote);
+
+        System.out.println("Pacote cadastrado com sucesso! ID: " + pacote.getIdPacote());
+        System.out.println();
+    }
+
+    private static void atualizarPacote(Scanner scanner, PacoteRepositorio pacoteRepositorio) {
+        System.out.println("Digite o ID do pacote que pretende atualizar:");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Digite o novo valor do pacote ou tecle Enter para usar o mesmo:");
+        String valorStr = scanner.nextLine();
+        if (!valorStr.isBlank()) {
+            Double novoValor = Double.parseDouble(valorStr);
+            Pacote pacoteEncontrado = pacoteRepositorio.buscarPorId(id);
+            if(pacoteEncontrado == null) {
+                System.out.println("Pacote não encontrado.");
+                return;
+            }
+            pacoteEncontrado.setValorPreco(novoValor);
+            Pacote pacoteAtualizado = pacoteRepositorio.atualizar(pacoteEncontrado);
+            System.out.println("Pacote de ID "+ pacoteAtualizado.getIdPacote() + " foi atualizado com sucesso!");
+        }
+    }
+
+    private static void deletarPacote(Scanner scanner, PacoteRepositorio pacoteRepositorio) {
+        System.out.print("Digite o ID do pacote que pretende deletar: ");
+        Integer id = scanner.nextInt();
+        pacoteRepositorio.deletar(id);
+        System.out.println("Pacote deletado com sucesso!");
+    }
+
 
 }
