@@ -15,7 +15,7 @@ public class VooRepositorio implements Repositorio<Voo> {
 
     @Override
     public void criar(Voo voo) {
-        String sql = "INSERT INTO voo (idVoo, companhiaAerea, dataPartida, dataChegada, valorPreco, idDestino) VALUES (?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO voo (id_voo, companhia_aerea, data_partida, data_chegada, valor_preco, id_destino) VALUES (?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,12 +44,12 @@ public class VooRepositorio implements Repositorio<Voo> {
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 Voo voo = new Voo();
-                voo.setIdVoo(resultSet.getInt("idVoo"));
-                voo.setCompanhiaAerea(resultSet.getString("companhiaAerea"));
-                voo.setDataPartida(resultSet.getDate("dataPartida"));
-                voo.setDataChegada(resultSet.getDate("dataChegada"));
-                voo.setValorPreco(resultSet.getDouble("valorPreco"));
-                voo.setIdDestino(resultSet.getInt("idDestino"));
+                voo.setIdVoo(resultSet.getInt("id_voo"));
+                voo.setCompanhiaAerea(resultSet.getString("companhia_aerea"));
+                voo.setDataPartida(resultSet.getDate("data_partida"));
+                voo.setDataChegada(resultSet.getDate("data_chegada"));
+                voo.setValorPreco(resultSet.getDouble("valor_preco"));
+                voo.setIdDestino(resultSet.getInt("id_destino"));
                 voos.add(voo);
             }
 
@@ -62,7 +62,7 @@ public class VooRepositorio implements Repositorio<Voo> {
 
     @Override
     public Voo atualizar(Voo voo) {
-        String sql = "UPDATE voo SET companhiaAerea = ?, dataPartida = ?, dataChegada = ?, valorPreco = ?, idDestino = ? WHERE idVoo = ?;";
+        String sql = "UPDATE voo SET companhia_aerea = ?, data_partida = ?, data_chegada = ?, valor_preco = ?, id_destino = ? WHERE id_voo = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -88,7 +88,7 @@ public class VooRepositorio implements Repositorio<Voo> {
 
     @Override
     public void deletar(Integer id) {
-        String sql = "DELETE FROM voo WHERE idVoo = ?;";
+        String sql = "DELETE FROM voo WHERE id_voo = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class VooRepositorio implements Repositorio<Voo> {
     }
 
     public Voo buscarPorId(Integer idVoo) {
-        String sql = "SELECT * FROM voo WHERE idVoo = ?;";
+        String sql = "SELECT * FROM voo WHERE id_voo = ?;";
         Voo voo = null;
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
@@ -117,12 +117,12 @@ public class VooRepositorio implements Repositorio<Voo> {
 
             if (resultSet.next()) {
                 voo = new Voo();
-                voo.setIdVoo(resultSet.getInt("idVoo"));
-                voo.setCompanhiaAerea(resultSet.getString("companhiaAerea"));
-                voo.setDataPartida(resultSet.getDate("dataPartida"));
-                voo.setDataChegada(resultSet.getDate("dataChegada"));
-                voo.setValorPreco(resultSet.getDouble("valorPreco"));
-                voo.setIdDestino(resultSet.getInt("idDestino"));
+                voo.setIdVoo(resultSet.getInt("id_voo"));
+                voo.setCompanhiaAerea(resultSet.getString("companhia_aerea"));
+                voo.setDataPartida(resultSet.getDate("data_partida"));
+                voo.setDataChegada(resultSet.getDate("data_chegada"));
+                voo.setValorPreco(resultSet.getDouble("valor_preco"));
+                voo.setIdDestino(resultSet.getInt("id_destino"));
                 System.out.println("Voo encontrado com sucesso.");
             } else {
                 System.out.println("Voo não encontrado para o ID fornecido.");

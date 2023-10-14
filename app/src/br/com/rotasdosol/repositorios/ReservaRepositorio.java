@@ -15,7 +15,7 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
     @Override
     public void criar(Reserva reserva) {
-        String sql = "INSERT INTO reserva (idReserva, idCliente, idPacote, idHospedagem, idVoo, dataReserva, statusReserva) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO reserva (id_reserva, id_cliente, id_pacote, id_hospedagem, id_voo, data_reserva, status_reserva) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -48,13 +48,13 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
             while (resultSet.next()) {
                 Reserva reservaEntidade = new Reserva();
-                reservaEntidade.setIdReserva(resultSet.getInt("idReserva"));
-                reservaEntidade.setIdCliente(resultSet.getInt("idCliente"));
-                reservaEntidade.setIdPacote(resultSet.getInt("idPacote"));
-                reservaEntidade.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                reservaEntidade.setIdVoo(resultSet.getInt("idVoo"));
-                reservaEntidade.setDataReserva(resultSet.getDate("dataReserva"));
-                reservaEntidade.setStatusReserva(StatusReserva.valueOf(resultSet.getString("statusReserva")));
+                reservaEntidade.setIdReserva(resultSet.getInt("id_reserva"));
+                reservaEntidade.setIdCliente(resultSet.getInt("id_cliente"));
+                reservaEntidade.setIdPacote(resultSet.getInt("id_pacote"));
+                reservaEntidade.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                reservaEntidade.setIdVoo(resultSet.getInt("id_voo"));
+                reservaEntidade.setDataReserva(resultSet.getDate("data_reserva"));
+                reservaEntidade.setStatusReserva(StatusReserva.valueOf(resultSet.getString("status_reserva")));
 
                 reservas.add(reservaEntidade);
             }
@@ -67,7 +67,7 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
     public List<Reserva> listar(Integer clienteId) {
         List<Reserva> reservas = new ArrayList<>();
-        String sql = "SELECT * FROM reserva WHERE idCliente = ? AND statusReserva = 'RESERVADO';";
+        String sql = "SELECT * FROM reserva WHERE id_cliente = ? AND status_reserva = 'RESERVADO';";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,13 +77,13 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
             while (resultSet.next()) {
                 Reserva reservaEntidade = new Reserva();
-                reservaEntidade.setIdReserva(resultSet.getInt("idReserva"));
-                reservaEntidade.setIdCliente(resultSet.getInt("idCliente"));
-                reservaEntidade.setIdPacote(resultSet.getInt("idPacote"));
-                reservaEntidade.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                reservaEntidade.setIdVoo(resultSet.getInt("idVoo"));
-                reservaEntidade.setDataReserva(resultSet.getDate("dataReserva"));
-                reservaEntidade.setStatusReserva(StatusReserva.valueOf(resultSet.getString("statusReserva")));
+                reservaEntidade.setIdReserva(resultSet.getInt("id_reserva"));
+                reservaEntidade.setIdCliente(resultSet.getInt("id_cliente"));
+                reservaEntidade.setIdPacote(resultSet.getInt("id_pacote"));
+                reservaEntidade.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                reservaEntidade.setIdVoo(resultSet.getInt("id_voo"));
+                reservaEntidade.setDataReserva(resultSet.getDate("data_reserva"));
+                reservaEntidade.setStatusReserva(StatusReserva.valueOf(resultSet.getString("status_reserva")));
 
                 reservas.add(reservaEntidade);
             }
@@ -96,7 +96,7 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
     @Override
     public Reserva atualizar(Reserva reserva) {
-        String sql = "UPDATE reserva SET idCliente = ?, idPacote = ?, idHospedagem = ?, idVoo = ?, dataReserva = ?, statusReserva = ? WHERE idReserva = ?;";
+        String sql = "UPDATE reserva SET id_cliente = ?, id_pacote = ?, id_hospedagem = ?, id_voo = ?, data_reserva = ?, status_reserva = ? WHERE id_reserva = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -123,7 +123,7 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
     @Override
     public void deletar(Integer idReserva) {
-        String sql = "UPDATE reserva SET statusReserva = 'CANCELADO' WHERE idReserva = ?;";
+        String sql = "UPDATE reserva SET status_reserva = 'CANCELADO' WHERE id_reserva = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -141,7 +141,7 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
     }
 
     public Reserva buscarPorId(Integer idReserva) {
-        String sql = "SELECT * FROM reserva WHERE idReserva = ?;";
+        String sql = "SELECT * FROM reserva WHERE id_reserva = ?;";
         Reserva reserva = null;
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
@@ -152,13 +152,13 @@ public class ReservaRepositorio implements Repositorio<Reserva> {
 
             if (resultSet.next()) {
                 reserva = new Reserva();
-                reserva.setIdReserva(resultSet.getInt("idReserva"));
-                reserva.setIdCliente(resultSet.getInt("idCliente"));
-                reserva.setIdPacote(resultSet.getInt("idPacote"));
-                reserva.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                reserva.setIdVoo(resultSet.getInt("idVoo"));
-                reserva.setDataReserva(resultSet.getDate("dataReserva"));
-                reserva.setStatusReserva(StatusReserva.valueOf(resultSet.getString("statusReserva")));
+                reserva.setIdReserva(resultSet.getInt("id_reserva"));
+                reserva.setIdCliente(resultSet.getInt("id_cliente"));
+                reserva.setIdPacote(resultSet.getInt("id_pacote"));
+                reserva.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                reserva.setIdVoo(resultSet.getInt("id_voo"));
+                reserva.setDataReserva(resultSet.getDate("data_reserva"));
+                reserva.setStatusReserva(StatusReserva.valueOf(resultSet.getString("status_reserva")));
 
                 System.out.println("Reserva encontrada com sucesso.");
             } else {

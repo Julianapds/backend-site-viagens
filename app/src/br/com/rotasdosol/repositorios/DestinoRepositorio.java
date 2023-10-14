@@ -15,7 +15,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
 
     @Override
     public void criar(Destino destino) {
-        String sql = "INSERT INTO destino (idDestino, nome, pais, cidade) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO destino (id_destino, nome, pais, cidade) VALUES (?, ?, ?, ?);";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -42,7 +42,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 Destino destino = new Destino();
-                destino.setIdDestino(resultSet.getInt("idDestino"));
+                destino.setIdDestino(resultSet.getInt("id_destino"));
                 destino.setNome(resultSet.getString("nome"));
                 destino.setPais(resultSet.getString("pais"));
                 destino.setCidade(resultSet.getString("cidade"));
@@ -58,7 +58,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
 
     @Override
     public Destino atualizar(Destino destino) {
-        String sql = "UPDATE destino SET nome = ?, pais = ?, cidade = ? WHERE idDestino = ?;";
+        String sql = "UPDATE destino SET nome = ?, pais = ?, cidade = ? WHERE id_destino = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -82,7 +82,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
 
     @Override
     public void deletar(Integer id) {
-        String sql = "DELETE FROM destino WHERE idDestino = ?;";
+        String sql = "DELETE FROM destino WHERE id_destino = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -100,7 +100,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
     }
 
     public Destino buscarPorId(Integer idDestino) {
-        String sql = "SELECT * FROM destino WHERE idDestino = ?;";
+        String sql = "SELECT * FROM destino WHERE id_destino = ?;";
         Destino destino = null;
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
@@ -111,7 +111,7 @@ public class DestinoRepositorio implements Repositorio<Destino> {
 
             if (resultSet.next()) {
                 destino = new Destino();
-                destino.setIdDestino(resultSet.getInt("idDestino"));
+                destino.setIdDestino(resultSet.getInt("id_destino"));
                 destino.setNome(resultSet.getString("nome"));
                 destino.setPais(resultSet.getString("pais"));
                 destino.setCidade(resultSet.getString("cidade"));

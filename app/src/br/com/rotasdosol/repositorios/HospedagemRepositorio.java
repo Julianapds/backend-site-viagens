@@ -14,7 +14,7 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
 
     @Override
     public void criar(Hospedagem hospedagem) {
-        String sql = "INSERT INTO hospedagem (idHospedagem, nomeHotel, tipoQuarto, dataCheckin, dataCheckout, valorPernoite, idDestino) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO hospedagem (id_hospedagem, nome_hotel, tipo_quarto, data_checkin, data_checkout, valor_pernoite, id_destino) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,13 +44,13 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 Hospedagem hospedagem = new Hospedagem();
-                hospedagem.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                hospedagem.setNomeHotel(resultSet.getString("nomeHotel"));
-                hospedagem.setTipoQuarto(resultSet.getString("tipoQuarto"));
-                hospedagem.setDataCheckin(resultSet.getDate("dataCheckin"));
-                hospedagem.setDataCheckout(resultSet.getDate("dataCheckout"));
-                hospedagem.setValorPernoite(resultSet.getDouble("valorPernoite"));
-                hospedagem.setIdDestino(resultSet.getInt("idDestino"));
+                hospedagem.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                hospedagem.setNomeHotel(resultSet.getString("nome_hotel"));
+                hospedagem.setTipoQuarto(resultSet.getString("tipo_quarto"));
+                hospedagem.setDataCheckin(resultSet.getDate("data_checkin"));
+                hospedagem.setDataCheckout(resultSet.getDate("data_checkout"));
+                hospedagem.setValorPernoite(resultSet.getDouble("valor_pernoite"));
+                hospedagem.setIdDestino(resultSet.getInt("id_destino"));
                 hospedagens.add(hospedagem);
             }
 
@@ -63,7 +63,7 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
 
     @Override
     public Hospedagem atualizar(Hospedagem hospedagem) {
-        String sql = "UPDATE hospedagem SET nomeHotel = ?, tipoQuarto = ?, dataCheckin = ?, dataCheckout = ?, valorPernoite = ?, idDestino = ? WHERE idHospedagem = ?;";
+        String sql = "UPDATE hospedagem SET nome_hotel = ?, tipo_quarto = ?, data_checkin = ?, data_checkout = ?, valor_pernoite = ?, id_destino = ? WHERE id_hospedagem = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -90,7 +90,7 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
 
     @Override
     public void deletar(Integer id) {
-        String sql = "DELETE FROM hospedagem WHERE idHospedagem = ?;";
+        String sql = "DELETE FROM hospedagem WHERE id_hospedagem = ?;";
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -108,7 +108,7 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
     }
 
     public Hospedagem buscarPorId(Integer idHospedagem) {
-        String sql = "SELECT * FROM hospedagem WHERE idHospedagem = ?;";
+        String sql = "SELECT * FROM hospedagem WHERE id_hospedagem = ?;";
         Hospedagem hospedagem = null;
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
@@ -119,13 +119,13 @@ public class HospedagemRepositorio implements Repositorio<Hospedagem> {
 
             if (resultSet.next()) {
                 hospedagem = new Hospedagem();
-                hospedagem.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                hospedagem.setNomeHotel(resultSet.getString("nomeHotel"));
-                hospedagem.setTipoQuarto(resultSet.getString("tipoQuarto"));
-                hospedagem.setDataCheckin(resultSet.getDate("dataCheckin"));
-                hospedagem.setDataCheckout(resultSet.getDate("dataCheckout"));
-                hospedagem.setValorPernoite(resultSet.getDouble("valorPernoite"));
-                hospedagem.setIdDestino(resultSet.getInt("idDestino"));
+                hospedagem.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                hospedagem.setNomeHotel(resultSet.getString("nome_hotel"));
+                hospedagem.setTipoQuarto(resultSet.getString("tipo_quarto"));
+                hospedagem.setDataCheckin(resultSet.getDate("data_checkin"));
+                hospedagem.setDataCheckout(resultSet.getDate("data_checkout"));
+                hospedagem.setValorPernoite(resultSet.getDouble("valor_pernoite"));
+                hospedagem.setIdDestino(resultSet.getInt("id_destino"));
                 System.out.println("Hospedagem encontrada com sucesso.");
             } else {
                 System.out.println("Hospedagem não encontrada para o ID fornecido.");

@@ -115,7 +115,7 @@ public class PacoteRepositorio implements Repositorio<Pacote> {
     }
 
     public Pacote buscarPorId(Integer id) {
-        String sql = "SELECT * FROM pacote WHERE idPacote = ?;";
+        String sql = "SELECT * FROM pacote WHERE id_pacote = ?;";
         Pacote pacote = null;
 
         try (Connection conn = ConexaoBancoDeDados.getConnection();
@@ -126,10 +126,10 @@ public class PacoteRepositorio implements Repositorio<Pacote> {
 
             if (resultSet.next()) {
                 pacote = new Pacote();
-                pacote.setIdPacote(resultSet.getInt("idPacote"));
-                pacote.setValorPreco(resultSet.getDouble("valorPreco"));
-                pacote.setIdHospedagem(resultSet.getInt("idHospedagem"));
-                pacote.setIdVoo(resultSet.getInt("idVoo"));
+                pacote.setIdPacote(resultSet.getInt("id_pacote"));
+                pacote.setValorPreco(resultSet.getDouble("valor_preco"));
+                pacote.setIdHospedagem(resultSet.getInt("id_hospedagem"));
+                pacote.setIdVoo(resultSet.getInt("id_voo"));
                 System.out.println("Pacote encontrado com sucesso.");
             } else {
                 System.out.println("Pacote não encontrado para o ID fornecido.");
