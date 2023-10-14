@@ -3,9 +3,14 @@ package br.com.rotasdosol;
 
 import br.com.rotasdosol.entidades.Cliente;
 import br.com.rotasdosol.entidades.Destino;
+import br.com.rotasdosol.entidades.Voo;
 import br.com.rotasdosol.repositorios.ClienteRepositorio;
 import br.com.rotasdosol.repositorios.DestinoRepositorio;
+import br.com.rotasdosol.repositorios.VooRepositorio;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -15,6 +20,7 @@ public class Principal {
 
         ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         DestinoRepositorio destinoRepositorio = new DestinoRepositorio();
+        VooRepositorio vooRepositorio = new VooRepositorio();
 
         Scanner scanner = new Scanner(System.in);
         int opcao;
@@ -51,12 +57,24 @@ public class Principal {
                     deletarDestino(scanner, destinoRepositorio);
                     break;
                 case 9:
+                    listarVoos(vooRepositorio);
+                    break;
+                case 10:
+                    cadastrarNovoVoo(scanner, vooRepositorio);
+                    break;
+                case 11:
+                    atualizarVoo(scanner, vooRepositorio);
+                    break;
+                case 12:
+                    deletarVoo(scanner, vooRepositorio);
+                    break;
+                case 13:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida!");
             }
-        } while (opcao != 9);
+        } while (opcao != 13);
 
         scanner.close();
     }
@@ -73,7 +91,11 @@ public class Principal {
         System.out.println("6) Cadastrar novo destino");
         System.out.println("7) Atualizar destino");
         System.out.println("8) Deletar destino");
-        System.out.println("9) Sair");
+        System.out.println("9) Listar voos");
+        System.out.println("10) Cadastrar novo voo");
+        System.out.println("11) Atualizar voo");
+        System.out.println("12) Deletar voo");
+        System.out.println("13) Sair");
         System.out.println();
     }
 
@@ -207,5 +229,89 @@ public class Principal {
         Integer id = scanner.nextInt();
         destinoRepositorio.deletar(id);
         System.out.println("Destino deletado com sucesso!");
+    }
+
+    private static void listarVoos(VooRepositorio vooRepositorio) {
+        System.out.println(vooRepositorio.listar());
+    }
+
+    private static void cadastrarNovoVoo(Scanner scanner, VooRepositorio vooRepositorio) {
+        System.out.println("Digite a companhia aérea:");
+        String companhiaAerea = scanner.nextLine();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date dataPartida = null;
+        System.out.println("Digite a data de partida (formato YYYY-MM-DD):");
+        String dataPartidaStr = scanner.nextLine();
+        try {
+            dataPartida = formatter.parse(dataPartidaStr);
+        } catch (ParseException e) {
+            System.out.println("Erro na data de partida: " + e.getMessage());
+            return;
+        }
+
+        Date dataChegada = null;
+        System.out.println("Digite a data de chegada (formato YYYY-MM-DD):");
+        String dataChegadaStr = scanner.nextLine();
+        try {
+            dataChegada = formatter.parse(dataChegadaStr);
+        } catch (ParseException e) {
+            System.out.println("Erro na data de chegada: " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Digite o valor do voo:");
+        Double valorPreco = scanner.nextDouble();
+
+        System.out.println("Digite o ID do destino:");
+        Integer idDestino = scanner.nextInt();
+        scanner.nextLine();
+
+        Voo voo = new Voo();
+        voo.setIdVoo(new Random().nextInt(100 - 1 + 1));
+        voo.setCompanhiaAerea(companhiaAerea);
+        voo.setDataPartida(dataPartida);
+        voo.setDataChegada(dataChegada);
+        voo.setValorPreco(valorPreco);
+        voo.setIdDestino(idDestino);
+
+        vooRepositorio.criar(voo);
+
+        System.out.println("Voo cadastrado com sucesso! ID: " + voo.getIdVoo());
+        System.out.println();
+    }
+
+
+    private static void atualizarVoo(Scanner scanner, VooRepositorio vooRepositorio) {
+
+        System.out.println("Digite o ID do voo que pretende atualizar:");
+        Integer id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Digite a nova companhia aérea ou tecle Enter para usar a mesma:");
+        String companhiaAerea = scanner.nextLine();
+
+        var vooEncontrado = vooRepositorio.buscarPorId(id);
+
+        if(vooEncontrado == null) {
+            System.out.println("Voo não encontrado.");
+            return;
+        }
+
+        if(companhiaAerea != null && !companhiaAerea.isBlank()) {
+            vooEncontrado.setCompanhiaAerea(companhiaAerea);
+        }
+
+        var vooAtualizado = vooRepositorio.atualizar(vooEncontrado);
+
+        System.out.println("Voo de ID "+ vooAtualizado.getIdVoo() + " foi atualizado com sucesso!");
+    }
+
+    private static void deletarVoo(Scanner scanner, VooRepositorio vooRepositorio) {
+        System.out.print("Digite o ID do voo que pretende deletar: ");
+        Integer id = scanner.nextInt();
+        vooRepositorio.deletar(id);
+        System.out.println("Voo deletado com sucesso!");
     }
 }
