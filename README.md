@@ -16,3 +16,8 @@ Rotas do Sol é um site de viagens. Ele foi desenvolvido como atividade integrad
 ### Diagrama de Classes
 ![Diagrama de Classes](./modelos-e-diagramas/modelo_classe_%20agencia.png)
 
+### Backend 
+O projeto Backend pode ser acessado na pasta/app. Para executar, execute os seguintes comandos:
+![`javac Principal.Java`](./modelos-e-diagramas/Backend_java.jpg)
+Em seguida, execute java Principal.java para rodar o projeto.
+Vai ser gerada uma interface no terminal com as opções para gerenciar clientes e suas reservas.
